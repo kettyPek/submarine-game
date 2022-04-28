@@ -6,51 +6,61 @@ public class Submarine {
 	
 	protected final int MIN_CELLS = 1;
 	protected final int MAX_CELLS = 4;
-	protected final int SUBMARINES_AMOUNT = 2;
+	protected final int SUBMARINES_AMOUNT = 5;
 	protected Board board;
-	protected int [][] logicBoard;
 	protected int [][] tempLogicBoard;
 	protected int placedSubmarines;
+	protected int celssToHit ;
 	
 	public Submarine(Board board) {
 		this.board = board;
-		logicBoard = board.getLogicBoard();
 		tempLogicBoard = board.deepCopyLogicBoard();	
 		placedSubmarines = 0;
+		celssToHit = 0;
 	}
 	
+	public int getCellsToHit() {
+		return SUBMARINES_AMOUNT;
+	}
  
 	public void placeSubmarinesOnBoard() {
 		while(placedSubmarines<SUBMARINES_AMOUNT) {
-			placeOneSubmarineOnBoard();	
+			placeOneSubmarineOnBoard();
+			deepTempLogicBoard();
 			board.printLogicBoard();
 		}
 	}
 	
 	private void placeOneSubmarineOnBoard(){
 		
-		int cellsNumber = (int)(Math.random()*(MAX_CELLS))+1;
-		int row = (int)(Math.random()*(board.getLogicBoardCols()+1));
-		int col = (int)(Math.random()*(board.getLogicBoardRows()+1));
-		System.out.println("Cells number : "+cellsNumber);
-		System.out.println(row+" , "+col);
+		int submarineSize = (int)(Math.random()*(MAX_CELLS))+1;
+		int col = (int)(Math.random()*board.getLogicBoardCols());
+		int row = (int)(Math.random()*board.getLogicBoardRows());
+		System.out.println("Submarine size : " + submarineSize);
+		System.out.println("["+row+" , "+col+"]");
 		int [] nextIndex;
-		for (int i=1; i<=cellsNumber; i++) {
+		int filledCells = 0;
+		for (int i=1; i<=submarineSize; i++) {
 			if(submarineIsPlaceable(row,col)) { 
 				tempLogicBoard[row][col] = 1;
-				placedSubmarines++;
+				filledCells++;
 			}
 			nextIndex = newIndex(row,col);
 			row = nextIndex[0];
 			col = nextIndex[1];
 		}
-		deepCopyTempLogicBoard();
+		if(filledCells!=submarineSize)
+			emptyTempLogicBoard();
+		else {
+			placedSubmarines++;
+			celssToHit += submarineSize;
+		}
 	}
 	
 	private boolean submarineIsPlaceable(int row, int col) {
-		if(row<0 || row>board.getLogicBoardRows() || col<0 || col>board.getLogicBoardCols())
+		if(row<0 || row>=board.getLogicBoardRows() || col<0 || col>=board.getLogicBoardCols())
 			return false;
-		if(logicBoard[row][col]==1)
+		if(board.getLogicBoard()[row][col]==1)
 			return false;
 		if(!perimeterCellIsClear(row,col))
 			return false;
@@ -59,15 +69,16 @@ public class Submarine {
 	
 	private boolean perimeterCellIsClear(int row, int col) {
 		
-		if(row-1>=0 && tempLogicBoard[row-1][col]==1)
+		if(!canBePlacedInCell(row-1,col))
 			return false;
-		if(row+1<board.getLogicBoardRows() && logicBoard[row+1][col]==1)
+		if(!canBePlacedInCell(row+1,col))
 			return false;
-		if(col-1>=0 && logicBoard[row][col-1]==1)
+		if(!canBePlacedInCell(row,col-1))
 			return false;
-		if(col+1<board.getLogicBoardCols() && logicBoard[row][col+1]==1)
+		if(!canBePlacedInCell(row,col+1))
 			return false;
 		return true;
+		
 	}
 	
 	private int [] newIndex(int row, int col) {
@@ -84,11 +95,27 @@ public class Submarine {
 			index_row_col[1] = moveToCol+col;
 		}
 		return index_row_col;	
+	}	
+	
+	private void emptyTempLogicBoard() {
+		for(int i=0; i<tempLogicBoard.length; i++)
+			for(int j=0; j<tempLogicBoard.length; j++)
+				tempLogicBoard[i][j] = 0;
 	}
 	
-	private void deepCopyTempLogicBoard(){
-		for (int i=0; i<board.getLogicBoardRows(); i++)
-			for(int j=0; j<board.getLogicBoardCols(); j++)
-				logicBoard[i][j] = tempLogicBoard[i][j];
+	public  void deepTempLogicBoard() {
+		for (int i = 0; i < board.getLogicBoard().length; i++)
+			for (int j = 0; j < board.getLogicBoard()[0].length; j++) {
+				if(tempLogicBoard[i][j]==1)
+					board.getLogicBoard()[i][j] = tempLogicBoard[i][j];;
+			}
+	}
+	
+	private boolean canBePlacedInCell(int row,int col) {
+		if(row<0 || row>=board.getLogicBoardRows() || col<0 || col>=board.getLogicBoardRows())
+			return false;
+		if(board.getLogicBoard()[row][col]==1)
+			return false;
+		return true;
 	}
 }

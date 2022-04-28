@@ -63,6 +63,16 @@ public class Board {
 			System.out.println("");
 		}
 	}
+	
+	public void checkIfHit(int row, int col) {
+		if(logicBoard[row][col]==1)
+			gameBoard[row+1][col+1] = 'H';
+		else
+			gameBoard[row+1][col+1] = 'm';
+	}
+	
+	
+	
 
 
 }
