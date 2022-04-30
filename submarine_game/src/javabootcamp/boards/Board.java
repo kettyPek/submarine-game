@@ -64,15 +64,13 @@ public class Board {
 		}
 	}
 	
-	public void checkIfHit(int row, int col) {
-		if(logicBoard[row][col]==1)
+	public boolean guessIsHit(int row, int col) {
+		if(logicBoard[row][col]==1) {
 			gameBoard[row+1][col+1] = 'H';
-		else
-			gameBoard[row+1][col+1] = 'm';
+			return true;
+		}
+		gameBoard[row+1][col+1] = 'm';
+		return false;
 	}
-	
-	
-	
-
 
 }

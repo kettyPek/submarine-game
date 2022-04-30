@@ -20,32 +20,35 @@ public class Submarine {
 	}
 	
 	public int getCellsToHit() {
-		return SUBMARINES_AMOUNT;
+		return celssToHit;
 	}
  
+	/**
+	 * Places -SUBMARINES_AMOUNT- submarines on board
+	 */
 	public void placeSubmarinesOnBoard() {
 		while(placedSubmarines<SUBMARINES_AMOUNT) {
 			placeOneSubmarineOnBoard();
-			deepTempLogicBoard();
-			board.printLogicBoard();
+			deepCopyTempLogicBoard();
 		}
 	}
 	
+	/**
+	 * Places randomly one submarine on the board
+	 */
 	private void placeOneSubmarineOnBoard(){
 		
 		int submarineSize = (int)(Math.random()*(MAX_CELLS))+1;
 		int col = (int)(Math.random()*board.getLogicBoardCols());
 		int row = (int)(Math.random()*board.getLogicBoardRows());
-		System.out.println("Submarine size : " + submarineSize);
-		System.out.println("["+row+" , "+col+"]");
-		int [] nextIndex;
+		int [] nextIndex; 
 		int filledCells = 0;
 		for (int i=1; i<=submarineSize; i++) {
 			if(submarineIsPlaceable(row,col)) { 
 				tempLogicBoard[row][col] = 1;
 				filledCells++;
 			}
-			nextIndex = newIndex(row,col);
+			nextIndex = newIndexOnPerimeter(row,col);
 			row = nextIndex[0];
 			col = nextIndex[1];
 		}
@@ -57,16 +60,30 @@ public class Submarine {
 		}
 	}
 	
+	/**
+	 * Checks if the submarine can be placed on a given coordinate
+	 * @param row 
+	 * @param col
+	 * @return
+	 */
 	private boolean submarineIsPlaceable(int row, int col) {
 		if(row<0 || row>=board.getLogicBoardRows() || col<0 || col>=board.getLogicBoardCols())
 			return false;
 		if(board.getLogicBoard()[row][col]==1)
+			return false;
+		if(tempLogicBoard[row][col]==1)
 			return false;
 		if(!perimeterCellIsClear(row,col))
 			return false;
 		return true;	
 	}
 	
+	/**
+	 * Checks if the perimeter of given cell is clear/free
+	 * @param row
+	 * @param col
+	 * @return
+	 */
 	private boolean perimeterCellIsClear(int row, int col) {
 		
 		if(!canBePlacedInCell(row-1,col))
@@ -81,7 +98,13 @@ public class Submarine {
 		
 	}
 	
-	private int [] newIndex(int row, int col) {
+	/**
+	 * Returns a random index on the perimeter of given cell
+	 * @param row
+	 * @param col
+	 * @return
+	 */
+	private int [] newIndexOnPerimeter(int row, int col) {
 		
 		int [] index_row_col = {row,col};
 		int moveToRow = (int)(Math.random()*3)-1;
@@ -97,13 +120,19 @@ public class Submarine {
 		return index_row_col;	
 	}	
 	
+	/**
+	 * Empties the logic board
+	 */
 	private void emptyTempLogicBoard() {
 		for(int i=0; i<tempLogicBoard.length; i++)
-			for(int j=0; j<tempLogicBoard.length; j++)
+			for(int j=0; j<tempLogicBoard[0].length; j++)
 				tempLogicBoard[i][j] = 0;
 	}
 	
-	public  void deepTempLogicBoard() {
+	/**
+	 * Makes a deep copy of logic tempLogicBoard to logicBaord
+	 */
+	public  void deepCopyTempLogicBoard() {
 		for (int i = 0; i < board.getLogicBoard().length; i++)
 			for (int j = 0; j < board.getLogicBoard()[0].length; j++) {
 				if(tempLogicBoard[i][j]==1)
@@ -111,11 +140,17 @@ public class Submarine {
 			}
 	}
 	
+	/**
+	 * Checks of the s
+	 * submarine can be place in given cell
+	 * @param row
+	 * @param col
+	 * @return
+	 */
 	private boolean canBePlacedInCell(int row,int col) {
-		if(row<0 || row>=board.getLogicBoardRows() || col<0 || col>=board.getLogicBoardRows())
-			return false;
-		if(board.getLogicBoard()[row][col]==1)
-			return false;
+		if(row>=0 && row<board.getLogicBoardRows() && col>=0 && col<board.getLogicBoardRows())
+			if(board.getLogicBoard()[row][col]==1)
+				return false;
 		return true;
 	}
 }
