@@ -1,36 +1,44 @@
 package javabootcamp.game;
 
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 import javabootcamp.boards.Board;
 import javabootcamp.exeptions.OutOfBoardException;
 import javabootcamp.exeptions.OutOfTargetsException;
+import javabootcamp.game_recording.GuessesReaderWriter;
+import javabootcamp.guess.Guess;
 import javabootcamp.menu.Menu;
+import javabootcamp.player.Player;
 import javabootcamp.submarine.Submarine;
 
 public class Game {
 	
 	protected Board board;
 	protected Submarine submarines;
-	protected int gusses;
+	protected int leftGuesses;
 	protected int points;
 	protected int numberOfHits;
 	protected int numberOfMisses;
 	protected int consecutiveGuesses;
 	protected int row;
 	protected int col;
+	protected Guess [] guesses;
+	protected Player player;
 	
 	Scanner scanner = new Scanner(System.in);
 	
-	public Game() {
+	public Game(Player player) {
 		board = new Board();
 		submarines = new Submarine(board);
 		submarines.placeSubmarinesOnBoard();
-		gusses = 100;
+		leftGuesses = 100;
 		points = 1000;
 		numberOfHits = 0;
 		numberOfMisses = 0;
 		consecutiveGuesses = 0;
+		guesses = new Guess[leftGuesses];
+		this.player = player;
 	}
 	
 	/**
@@ -38,12 +46,13 @@ public class Game {
 	 */
 	public void startdGame() {
 		board.printLogicBoard();
-		while(gusses>0) {	
+		while(leftGuesses>0) {	
 			System.out.println("Enter row:");
 			row = getUsersInput(board.getLogicBoardRows());
 			if(Menu.gameOn) {
 				System.out.println("Enter collumn");
 				col = getUsersInput(board.getLogicBoardCols());
+				addGuessToGuessArray();
 			}
 			if(Menu.gameOn) {
 				try {
@@ -59,6 +68,8 @@ public class Game {
 				break;	
 			}
 		}
+		GuessesReaderWriter.EnterGuesses(guesses);
+		
 		scanner.close();
 	}
 	
@@ -88,7 +99,7 @@ public class Game {
 				updateHit();
 		else
 			updateMiss();
-		gusses--;
+		leftGuesses--;
 	}
 	
 	private void updateHit() {
@@ -141,6 +152,32 @@ public class Game {
 		checkPlayersGuess();	
 	}
 	
+	private void addGuessToGuessArray() {
+		guesses[100-leftGuesses] = new Guess(100-leftGuesses+1,row,col);
+		System.out.println(guesses[100-leftGuesses]);
+	}
+	
+	public void replayMoves() {
+		Guess [] guessesToReplay = GuessesReaderWriter.ReadGuesses();
+		int index = 0;
+		System.out.println(guessesToReplay[index]);
+		while(guessesToReplay[index]!=null) {
+			row = guessesToReplay[index].getRow();
+			col = guessesToReplay[index].getCol();
+			displayGameStatus();
+			index++;
+			try {
+				tryCoordinates();
+				TimeUnit.SECONDS.sleep(5);
+			} catch (OutOfTargetsException e) {
+				System.out.println(e);
+			} catch (InterruptedException e) {
+				System.out.println(e);
+			}
+			
+		}
+		
+	}
 	
 
 }
