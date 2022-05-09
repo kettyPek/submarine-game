@@ -1,6 +1,6 @@
 package javabootcamp.game;
 
-import java.util.Scanner;
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import javabootcamp.boards.Board;
@@ -11,6 +11,7 @@ import javabootcamp.guess.Guess;
 import javabootcamp.menu.Menu;
 import javabootcamp.player.Player;
 import javabootcamp.submarine.Submarine;
+import javabootcamp.utils.GameScanner;
 
 public class Game {
 	
@@ -26,7 +27,6 @@ public class Game {
 	protected Guess [] guesses;
 	protected Player player;
 	
-	Scanner scanner = new Scanner(System.in);
 	
 	public Game(Player player) {
 		board = new Board();
@@ -43,8 +43,10 @@ public class Game {
 	
 	/**
 	 * Starts the game
+	 * @throws IOException 
 	 */
 	public void startdGame() {
+		GuessesReaderWriter.createFileWithCurrentSubmarines(submarines);
 		board.printLogicBoard();
 		while(leftGuesses>0) {	
 			System.out.println("Enter row:");
@@ -70,7 +72,7 @@ public class Game {
 		}
 		GuessesReaderWriter.EnterGuesses(guesses);
 		
-		scanner.close();
+		GameScanner.scanner.close();
 	}
 	
 	/**
@@ -117,7 +119,7 @@ public class Game {
 	}
 	
 	private int getUsersInput( int boardDimention) {
-		String inputAsString = scanner.next();
+		String inputAsString = GameScanner.scanner.next();
 		int scannedInput = -1;
 		int valueToReturn = -1;
 		while(true) {
@@ -131,10 +133,10 @@ public class Game {
 					break;
 				}
 				System.out.println("invalid input, try again");
-				inputAsString = scanner.next();
+				inputAsString = GameScanner.scanner.next();
 			}catch(OutOfBoardException e) {
 				System.out.println("given value is out out of board dimentions, enter values in the range [0,"+(boardDimention-1)+"]");
-				inputAsString = scanner.next();
+				inputAsString = GameScanner.scanner.next();
 			}
 		}
 		return valueToReturn;
@@ -159,6 +161,7 @@ public class Game {
 	
 	public void replayMoves() {
 		Guess [] guessesToReplay = GuessesReaderWriter.ReadGuesses();
+		
 		int index = 0;
 		System.out.println(guessesToReplay[index]);
 		while(guessesToReplay[index]!=null) {
