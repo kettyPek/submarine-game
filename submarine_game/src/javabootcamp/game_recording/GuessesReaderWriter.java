@@ -65,7 +65,5 @@ public class GuessesReaderWriter {
 		}catch(IOException e) {
 			System.out.println("could not create file");
 		}
-		
-		
 	}
 }

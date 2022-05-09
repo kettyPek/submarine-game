@@ -1,7 +1,5 @@
 package javabootcamp.player;
 
-
-
 public class Player {
 	
 	protected String name;
@@ -17,9 +15,4 @@ public class Player {
 		
 	}
 	
-
-	
-	
-	
-
 }
