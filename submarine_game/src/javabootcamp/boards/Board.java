@@ -1,6 +1,8 @@
 package javabootcamp.boards;
 
-public class Board {
+import java.io.Serializable;
+
+public class Board implements Serializable{
 
 	protected int[][] logicBoard;
 	protected char[][] gameBoard;
