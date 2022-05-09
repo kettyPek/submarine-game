@@ -1,8 +1,10 @@
 package javabootcamp.submarine;
 
+import java.io.Serializable;
+
 import javabootcamp.boards.Board;
 
-public class Submarine {
+public class Submarine implements Serializable{
 	
 	protected final int MIN_CELLS = 1;
 	protected final int MAX_CELLS = 4;
