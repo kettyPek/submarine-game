@@ -49,8 +49,7 @@ public class Board implements Serializable{
 					gameBoard[i][j] = ' ';
 			}
 	}
-	
-	public void printGameBoard() {
+		public void printGameBoard() {
 		for (int i = 0; i < GAME_BOARD_ROWS; i++) {
 			for (int j = 0; j < GAME_BOARD_COLS; j++)
 				System.out.print(gameBoard[i][j]);

@@ -1,6 +1,11 @@
 package javabootcamp.menu;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+
 import javabootcamp.game.Game;
+import javabootcamp.game_recording.GuessesReaderWriter;
 import javabootcamp.player.Player;
 import javabootcamp.utils.GameScanner;
 
@@ -16,14 +21,14 @@ public class Menu {
 		gameCounter = 0;
 	}
 	
-	public void displayMainMenu() {
+	public void displayMainMenu() throws IOException, InterruptedException, ExecutionException {
 		System.out.println("Please select:");
 		System.out.println("1 - play new game");
 		System.out.println("2 - replay a game");
 		enterModeByUserSeLection();
 	}
 	
-	private void enterModeByUserSeLection() {
+	private void enterModeByUserSeLection() throws IOException, InterruptedException, ExecutionException {
 		int selection = GameScanner.scanner.nextInt();
 		switch(selection){
 		case 1:
@@ -39,16 +44,19 @@ public class Menu {
 			replayMode = true;
 			displayReplayMenu();
 			break;
+		case 3:
+			GuessesReaderWriter.readRecoerdFromFILE(1);
+			break;
 		}	
 	}
 	
 	private void displayReplayMenu() {
-		System.out.println("Please select game to replay:");
+		File recordFolder = new File("GameFiles");
+		int recordsAmount = recordFolder.list().length;
+		System.out.println("Please select game to replay : [0," +(recordsAmount-1) +"]");
 		int selection = GameScanner.scanner.nextInt();
 		String fileToReplay = "GameFiles/gameNumber" + selection + ".dat";
-		//replay game function
 	}
 	
 	
-
 }

@@ -151,7 +151,7 @@ public class Submarine implements Serializable{
 	 */
 	private boolean canBePlacedInCell(int row,int col) {
 		if(row>=0 && row<board.getLogicBoardRows() && col>=0 && col<board.getLogicBoardRows())
-			if(board.getLogicBoard()[row][col]==1)
+	 		if(board.getLogicBoard()[row][col]==1)
 				return false;
 		return true;
 	}

@@ -1,11 +1,13 @@
 package javabootcamp.game;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import javabootcamp.boards.Board;
 import javabootcamp.exeptions.OutOfBoardException;
 import javabootcamp.exeptions.OutOfTargetsException;
+import javabootcamp.game_recording.GameRecord;
 import javabootcamp.game_recording.GuessesReaderWriter;
 import javabootcamp.guess.Guess;
 import javabootcamp.menu.Menu;
@@ -44,8 +46,10 @@ public class Game {
 	/**
 	 * Starts the game
 	 * @throws IOException 
+	 * @throws ExecutionException 
+	 * @throws InterruptedException 
 	 */
-	public void startdGame() {
+	public void startdGame() throws IOException, InterruptedException, ExecutionException {
 		GuessesReaderWriter.createFileWithCurrentSubmarines(submarines);
 		board.printLogicBoard();
 		while(leftGuesses>0) {	
@@ -70,11 +74,13 @@ public class Game {
 				break;	
 			}
 		}
+		
+		GuessesReaderWriter.createRecordFile(new GameRecord(player,submarines,guesses));
 		GuessesReaderWriter.EnterGuesses(guesses);
 		
 		GameScanner.scanner.close();
 	}
-	
+	 
 	/**
 	 * Displays games game and logic boards
 	 */
@@ -181,6 +187,7 @@ public class Game {
 		}
 		
 	}
+	
 	
 
 }
